@@ -1,4 +1,5 @@
 numpy==1.15.0
+opencv-python==3.4.2.17
 Pillow==5.2.0
 six==1.11.0
 torch==0.4.1
