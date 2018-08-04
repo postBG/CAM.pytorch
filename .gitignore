@@ -151,7 +151,6 @@ celerybeat-schedule
 
 # Environments
 .env
-.venv
 env/
 venv/
 ENV/
@@ -173,3 +172,6 @@ venv.bak/
 
 # Pycharm
 .idea/
+
+# DataSet
+data/
