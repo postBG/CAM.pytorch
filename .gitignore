@@ -175,3 +175,6 @@ venv.bak/
 
 # DataSet
 data/
+
+# jupyter notebook
+*.ipynb
