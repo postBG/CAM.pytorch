@@ -5,18 +5,19 @@ import torch.nn.functional as F
 import torch.optim as optim
 
 
-def save_checkpoint(state, is_best=False, filename='output/checkpoint.pth.tar'):
+def save_checkpoint(state, is_best=False, filename='/output/checkpoint.pth.tar'):
     torch.save(state, filename)
     if is_best:
-        shutil.copyfile(filename, 'model_best.pth.tar')
+        shutil.copyfile(filename, '/output/model_best.pth.tar')
 
 
 class Trainer(object):
-    def __init__(self, model, device, loader_factory, epoch=100, lr=0.0001, batch_size=64):
+    def __init__(self, model, device, loader_factory, epoch=100, lr=0.0001, batch_size=64, data_root='./data'):
         self.device = device
         self.epoch = epoch
         self.lr = lr
         self.batch_size = batch_size
+        self.data_root = data_root
 
         self.loader_factory = loader_factory
 
@@ -28,17 +29,17 @@ class Trainer(object):
     def train(self):
         for e in range(self.epoch):
             self.train_one_epoch(e)
-
-            if e % 5 == 0:
+            if e % 5 == 0 or e == self.epoch - 1:
                 loss = self.test_model()
                 if loss < self.min_loss:
                     self.min_loss = loss
+                    print("======================================Save New Model======================================")
                     save_checkpoint(self.model.state_dict(), is_best=True)
 
     def train_one_epoch(self, epoch):
         self.model.train()
 
-        train_data_loader = self.loader_factory(batch_size=self.batch_size, train=True)
+        train_data_loader = self.loader_factory(data_root=self.data_root, batch_size=self.batch_size, train=True)
         for batch_idx, (images, labels) in enumerate(train_data_loader):
             images = images.to(self.device)
             labels = labels.to(self.device)
@@ -56,9 +57,10 @@ class Trainer(object):
                     len(train_data_loader.dataset),
                     100. * batch_idx / len(train_data_loader.dataset),
                     loss.item()))
+                print('{{"metric": "train loss", "value": {}}}'.format(loss.item()))
 
     def test_model(self):
-        test_data_loader = self.loader_factory(batch_size=self.batch_size, train=False)
+        test_data_loader = self.loader_factory(data_root=self.data_root, batch_size=self.batch_size, train=False)
 
         with torch.no_grad():
             self.model.eval()
@@ -74,10 +76,12 @@ class Trainer(object):
                 correct += pred.eq(labels.view_as(pred)).sum().item()
 
             test_loss /= len(test_data_loader.dataset)
+            accuracy = 100. * correct / len(test_data_loader.dataset)
             print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
                 test_loss,
                 correct,
                 len(test_data_loader.dataset),
-                100. * correct / len(test_data_loader.dataset)))
-
+                accuracy))
+            print('{{"metric": "test loss", "value": {}}}'.format(test_loss))
+            print('{{"metric": "test accuracy", "value": {}}}'.format(accuracy))
             return test_loss
