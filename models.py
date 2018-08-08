@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 
 from dataset import CLASSES
@@ -72,3 +73,10 @@ class ConvNetWithGAP(nn.Module):
             elif isinstance(m, nn.BatchNorm2d):
                 nn.init.constant_(m.weight, 1)
                 nn.init.constant_(m.bias, 0)
+
+    @staticmethod
+    def get_pretrained():
+        model = ConvNetWithGAP()
+        model.load_state_dict(torch.load("output/checkpoint.pth.tar",
+                                         map_location="cuda" if torch.cuda.is_available() else "cpu"))
+        return model

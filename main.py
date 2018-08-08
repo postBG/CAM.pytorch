@@ -13,10 +13,11 @@ parser.add_argument('--epoch', type=int, default=100, help='epoch (default: 100)
 parser.add_argument('--output', type=str, default='output', help='dir to save model (default: output)')
 parser.add_argument('--batch_size', type=int, default=64, help='batch size (default: 64)')
 parser.add_argument('--data_root', type=str, default='data', help='data root (default: data).')
+parser.add_argument('--mode', type=str, default='train', help='mode (default: train, one of [train, cam])')
 args = parser.parse_args()
 
 
-def main():
+def run_train_mode():
     if not os.path.exists(args.output):
         os.makedirs(args.output)
 
@@ -26,6 +27,17 @@ def main():
     trainer = Trainer(model, device, get_cifar10_loader,
                       epoch=args.epoch, lr=args.lr, batch_size=args.batch_size, data_root=args.data_root)
     trainer.train()
+
+
+def run_cam_mode():
+    pass
+
+
+def main():
+    if args.mode == 'train':
+        run_train_mode()
+    else:
+        run_cam_mode()
 
 
 if __name__ == "__main__":
