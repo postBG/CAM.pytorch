@@ -172,7 +172,6 @@ venv.bak/
 
 # Pycharm
 .idea/
-output/
 
 # DataSet
 data/

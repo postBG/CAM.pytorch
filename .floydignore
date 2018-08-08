@@ -16,3 +16,4 @@ checkpoint.pth.tar
 data
 venv
 .idea
+output
