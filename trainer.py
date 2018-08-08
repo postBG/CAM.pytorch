@@ -25,6 +25,16 @@ class Trainer(object):
 
         self.min_loss = 999.
 
+    def train(self):
+        for e in range(self.epoch):
+            self.train_one_epoch(e)
+
+            if e % 5 == 0:
+                loss = self.test_model()
+                if loss < self.min_loss:
+                    self.min_loss = loss
+                    save_checkpoint(self.model.state_dict(), is_best=True)
+
     def train_one_epoch(self, epoch):
         self.model.train()
 
@@ -47,12 +57,6 @@ class Trainer(object):
                     100. * batch_idx / len(train_data_loader.dataset),
                     loss.item()))
 
-        if epoch % 5 == 0:
-            loss = self.test_model()
-            if loss < self.min_loss:
-                self.min_loss = loss
-                save_checkpoint(self.model.state_dict(), is_best=True)
-
     def test_model(self):
         test_data_loader = self.loader_factory(batch_size=self.batch_size, train=False)
 
@@ -65,7 +69,7 @@ class Trainer(object):
                 labels = labels.to(self.device)
 
                 logits = self.model(images)
-                test_loss += F.cross_entropy(logits, labels)
+                test_loss += F.cross_entropy(logits, labels).item()
                 pred = logits.max(1, keepdim=True)[1]
                 correct += pred.eq(labels.view_as(pred)).sum().item()
 

@@ -4,6 +4,8 @@ import argparse
 import torch
 
 from models import ConvNetWithGAP
+from trainer import Trainer
+from dataset import get_cifar10_loader
 
 parser = argparse.ArgumentParser(description='PyTorch CAM')
 parser.add_argument('--lr', type=float, default=0.0001, help='learning rate (default: 0.0001)')
@@ -19,6 +21,9 @@ def main():
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = ConvNetWithGAP()
+
+    trainer = Trainer(model, device, get_cifar10_loader, epoch=args.epoch, lr=args.lr, batch_size=args.batch_size)
+    trainer.train()
 
 
 if __name__ == "__main__":
