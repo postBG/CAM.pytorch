@@ -50,6 +50,7 @@ class ConvNetWithGAP(nn.Module):
 
         # 10 * 1 * 1
         self.fc = nn.Linear(10, 10)
+        self.init_weights()
 
     def forward(self, images):
         out = self.conv1(images)
@@ -63,3 +64,11 @@ class ConvNetWithGAP(nn.Module):
         logits = self.fc(out.view(-1, 10))
 
         return logits
+
+    def init_weights(self):
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+            elif isinstance(m, nn.BatchNorm2d):
+                nn.init.constant_(m.weight, 1)
+                nn.init.constant_(m.bias, 0)
