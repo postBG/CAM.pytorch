@@ -41,6 +41,8 @@ class ConvNetWithGAP(nn.Module):
 
         # 256 * 32 * 32
         self.conv5 = nn.Sequential(
+            # 여기서 NIN의 GAP는 len(CLASSES)만큼 feature map을 만들고, 바로 softmax로 들어가지만
+            # CAM에서는 그럴 필요없다. 즉, 꼭 len(CLASSES)를 out channel갯수로 하지 않아도 된다.
             nn.Conv2d(256, len(CLASSES), kernel_size=3, stride=1, padding=1),
             nn.BatchNorm2d(len(CLASSES)),
             nn.LeakyReLU(0.2)
