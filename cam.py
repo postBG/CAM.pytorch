@@ -42,7 +42,14 @@ def create_cam(export_root='result'):
 
 
 def save_test_image(image_tensor):
-    pil_image = transforms.ToPILImage()(image_tensor[0])
+    denormalize = transforms.Compose([
+        transforms.Normalize([0, 0, 0], [2., 2., 2.]),
+        transforms.Normalize([-0.5, -0.5, -0.5], [1., 1., 1.])
+    ])
+    transform = transforms.Compose([
+        denormalize, transforms.ToPILImage()
+    ])
+    pil_image = transform(image_tensor[0])
     pil_image.save(TEST_JPG)
 
 
