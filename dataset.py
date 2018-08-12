@@ -3,8 +3,9 @@ from torchvision import datasets, transforms
 
 CLASSES = ('plane', 'car', 'bird', 'cat',
            'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+IMG_SIZE = 128
 default_transform = transforms.Compose([
-    transforms.Resize(128),
+    transforms.Resize(IMG_SIZE),
     transforms.ToTensor(),
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ])
