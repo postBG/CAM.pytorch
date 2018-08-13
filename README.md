@@ -8,6 +8,4 @@ $> floyd run --gpu --env pytorch-0.4 --data ririau/datasets/pytorch-cifar10-data
 ```
 
 ## Result
-![](assets/plane1.jpg) ![](assets/plane1_cam.jpg)
-
 ![](assets/cat1.jpg) ![](assets/cat1_cam.jpg)
